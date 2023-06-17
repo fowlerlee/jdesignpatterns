@@ -15,7 +15,8 @@ class XRayCalculation implements ICalculation {
    @Override
    public double compute(int ... Voltage) {
       if (Voltage.length == 1) {
-         return 1.60217662*10e-19*Voltage[0];
+         double ENERGY_CONSTANT = 1.60217662 * 10e-19;
+         return ENERGY_CONSTANT * Voltage[0];
       }
       double sum = Arrays.stream(Voltage).asDoubleStream().sum();
       return 1.60217662*10e-19*sum;
