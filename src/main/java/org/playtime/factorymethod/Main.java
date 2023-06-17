@@ -2,9 +2,12 @@ package org.playtime.factorymethod;
 
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import static java.lang.Math.pow;
 
 interface ICalculation {
+   double value = 0;
    double compute(int ... a);
 }
 
@@ -61,12 +64,14 @@ class EnsteinCalculation implements ICalculation {
 
    @Override
    public double compute(int... a) {
-      double LIGHT_SPEED_SQUARED = pow(299_792_458, 2);
-      if (a.length == 1) {
-         return LIGHT_SPEED_SQUARED * a[0];
+      synchronized (this){
+         double LIGHT_SPEED_SQUARED = pow(299_792_458, 2);
+         if (a.length == 1) {
+            return LIGHT_SPEED_SQUARED * a[0];
+         }
+         double sum = Arrays.stream(a).asDoubleStream().sum();
+         return LIGHT_SPEED_SQUARED * sum;
       }
-      double sum = Arrays.stream(a).asDoubleStream().sum();
-      return LIGHT_SPEED_SQUARED * sum;
    }
 }
 
@@ -114,5 +119,16 @@ public class Main {
 
       CalculationFactory einstein = new EnsteinCalculationFactory();
       System.out.println("enstein calc: " +  einstein.createCalculation().compute(1000));
+
+      CalculationFactory speedy = new EnsteinCalculationFactory();
+      final ICalculation spC = speedy.createCalculation();
+      Runnable a = () -> System.out.println("Enstein From A: " + spC.compute(1000));
+      Runnable b = () -> System.out.println("Enstein From B: " + spC.compute(500));
+
+      final ExecutorService executorService = Executors.newFixedThreadPool(2);
+      executorService.submit(a);
+      executorService.submit(b);
+
+      executorService.shutdown();
    }
 }
