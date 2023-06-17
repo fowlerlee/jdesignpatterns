@@ -3,12 +3,18 @@ package org.playtime.builder;
 
 
 class User {
+    enum Gender {
+        FEMALE,
+        MALE,
+    }
+
+
     private String name;
     private String lastName;
     private int age;
     private String address;
     private String occupation;
-    private String gender;
+    private Gender gender;
 
     public void setName(String name) {
         this.name = name;
@@ -30,7 +36,7 @@ class User {
         this.occupation = occupation;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
@@ -78,7 +84,7 @@ class UserBuilder {
         return this;
     }
 
-    public UserBuilder addGender(String s){
+    public UserBuilder addGender(User.Gender s){
         user.setGender(s);
         return this;
     }
@@ -94,12 +100,12 @@ public class Main {
     public static void main(String[] args) {
 
         var s = new UserBuilder()
-                .addName("lee")
-                .addLastName("Fowler")
-                .addAge(20)
-                .addAddress("Simrishamnsvägen")
-                .addOccupation("Engineer")
-                .addGender("Male")
+                .addName("meep")
+                .addLastName("mooper")
+                .addAge(23)
+                .addAddress("Meadow of Sorrows")
+                .addOccupation("Mail delivery guy")
+                .addGender(User.Gender.FEMALE)
                 .build();
 
         System.out.println(s.toString());
