@@ -2,6 +2,7 @@ package org.playtime.factorymethod;
 
 
 import java.util.Arrays;
+import static java.lang.Math.pow;
 
 interface ICalculation {
    double compute(int ... a);
@@ -53,6 +54,21 @@ class AddCalculation implements ICalculation {
    }
 
 }
+class EnsteinCalculation implements ICalculation {
+
+   public EnsteinCalculation() {
+   }
+
+   @Override
+   public double compute(int... a) {
+      double LIGHT_SPEED_SQUARED = pow(299_792_458, 2);
+      if (a.length == 1) {
+         return LIGHT_SPEED_SQUARED * a[0];
+      }
+      double sum = Arrays.stream(a).asDoubleStream().sum();
+      return LIGHT_SPEED_SQUARED * sum;
+   }
+}
 
 
 abstract class CalculationFactory {
@@ -80,6 +96,13 @@ class MyAddCalculationFactory extends CalculationFactory {
    }
 }
 
+class EnsteinCalculationFactory extends CalculationFactory {
+   public ICalculation createCalculation() {
+      return new EnsteinCalculation();
+   }
+
+}
+
 
 public class Main {
    public static void main(String[] args) {
@@ -87,6 +110,9 @@ public class Main {
       System.out.println("xray: " + xrayFac.createCalculation().compute(200));
 
       CalculationFactory addFac  = new MyAddCalculationFactory();
-      System.out.println("xray: " + addFac.createCalculation().compute(1,1,1));
+      System.out.println("add calc: " + addFac.createCalculation().compute(1,1,1));
+
+      CalculationFactory einstein = new EnsteinCalculationFactory();
+      System.out.println("enstein calc: " +  einstein.createCalculation().compute(1000));
    }
 }
