@@ -41,8 +41,8 @@ class Consumer<T> implements Runnable {
             try {
                 System.out.println(safeQueue.get().pop());
                 // only process 99% of the values
-                if (i == 10000 * 99 / 100)
-                    System.exit(0);
+                //if (i == 10000 * 99 / 100)
+                //   System.exit(0);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -84,7 +84,7 @@ class ThreadSafeQueue<T> {
      */
     public synchronized T pop() throws InterruptedException {
         T remove = null;
-        if (queue.size() > 0 && queue.size() < 5) {
+        if (queue.size() > 0 && queue.size() <= 5) {
             remove = queue.remove(0);
             this.notify();
         }
@@ -94,7 +94,7 @@ class ThreadSafeQueue<T> {
 }
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ThreadSafeQueue<Integer> iQ = new ThreadSafeQueue<>(new LinkedList<>());
         Producer p = new Producer(iQ);
         Consumer c = new Consumer(iQ);
